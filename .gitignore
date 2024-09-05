@@ -3,3 +3,9 @@ dist
 node_modules
 .vscode-test/
 *.vsix
+
+# Ignore compiled JavaScript files and source maps
+extension.js
+extension.js.map
+extension.test.js
+extension.test.js.map

@@ -1,5 +1,7 @@
 # vscodesidian README
 
+[Dev documentation for this extension](./dev-docs.md)
+
 This is the README for your extension "vscodesidian". After writing up a brief description, we recommend including the following sections.
 
 ## Features
