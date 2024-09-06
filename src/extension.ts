@@ -1,26 +1,48 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import * as fs from 'fs';
+import * as path from 'path';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+let statusBarItem: vscode.StatusBarItem;
+
 export function activate(context: vscode.ExtensionContext) {
+    console.log('VSCodesidian extension Running');
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "vscodesidian" is now active!');
+    try {
+        statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+        statusBarItem.text = 'Obsidian Vault';
+        statusBarItem.tooltip = 'VSCodesidian detected open vault';
+        context.subscriptions.push(statusBarItem);
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('vscodesidian.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from VSCodesidian!');
-	});
+        detectObsidianVault();
 
-	context.subscriptions.push(disposable);
+        // Listen for workspace folder changes
+        context.subscriptions.push(vscode.workspace.onDidChangeWorkspaceFolders(() => detectObsidianVault()));
+    } catch (error) {
+        console.error('Error activating VSCodesidian:', error);
+    }
 }
 
-// This method is called when your extension is deactivated
-export function deactivate() {}
+function detectObsidianVault() {
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (!workspaceFolders) {
+        statusBarItem.hide();
+        return;
+    }
+
+    const workspaceRoot = workspaceFolders[0].uri.fsPath;
+    const obsidianDir = path.join(workspaceRoot, '.obsidian');
+
+    if (fs.existsSync(obsidianDir)) {
+        console.log('Obsidian vault detected');
+        statusBarItem.text = 'Obsidian';
+        statusBarItem.show();
+    } else {
+        statusBarItem.hide();
+    }
+}
+
+export function deactivate() {
+    if (statusBarItem) {
+        statusBarItem.dispose();
+    }
+}
