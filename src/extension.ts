@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
-import * as fs from 'fs';
-import * as path from 'path';
+import { detectObsidianVault } from './vault-detection/vault-detection';
 
 let statusBarItem: vscode.StatusBarItem;
 
@@ -13,31 +12,12 @@ export function activate(context: vscode.ExtensionContext) {
 		statusBarItem.tooltip = 'VSCodesidian detected open vault';
 		context.subscriptions.push(statusBarItem);
 
-		detectObsidianVault();
+		detectObsidianVault(statusBarItem);
 
 		// Listen for workspace folder changes
-		context.subscriptions.push(vscode.workspace.onDidChangeWorkspaceFolders(() => detectObsidianVault()));
+		context.subscriptions.push(vscode.workspace.onDidChangeWorkspaceFolders(() => detectObsidianVault(statusBarItem)));
 	} catch (error) {
 		console.error('Error activating VSCodesidian:', error);
-	}
-}
-
-function detectObsidianVault() {
-	const workspaceFolders = vscode.workspace.workspaceFolders;
-	if (!workspaceFolders) {
-		statusBarItem.hide();
-		return;
-	}
-
-	const workspaceRoot = workspaceFolders[0].uri.fsPath;
-	const obsidianDir = path.join(workspaceRoot, '.obsidian');
-
-	if (fs.existsSync(obsidianDir)) {
-		console.log('Obsidian vault detected');
-		statusBarItem.text = 'Obsidian';
-		statusBarItem.show();
-	} else {
-		statusBarItem.hide();
 	}
 }
 
