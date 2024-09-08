@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { createStatusBarItem, updateStatusBarVisibility } from './vault-detection/statusbar-utils';
+import * as path from 'path';
 
 let statusBarItem: vscode.StatusBarItem;
 
@@ -17,6 +18,10 @@ export function activate(context: vscode.ExtensionContext) {
 				() => updateStatusBarVisibility(statusBarItem)
 			)
 		);
+		// Load custom markdown styles
+		const styleFilePath = vscode.Uri.file(path.join(context.extensionPath, 'src', 'styles', 'markdown-styles.css'));
+		vscode.workspace.getConfiguration('markdown').update('styles', [styleFilePath.fsPath], vscode.ConfigurationTarget.Global);
+
 
 	} catch (error) {
 		console.error('Error activating VSCodesidian:', error);

@@ -14,11 +14,8 @@
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
-		"commands": [
-			{
-				"command": "vscodesidian.openObsidianPreview",
-				"title": "Open Obsidian-style Markdown Preview"
-			}
+		"markdown.previewStyles": [
+			"./src/styles/markdown-text.css"
 		]
 	},
 	"scripts": {
