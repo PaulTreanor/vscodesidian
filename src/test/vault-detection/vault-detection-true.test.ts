@@ -1,16 +1,9 @@
 import { vi, describe, it, expect } from 'vitest';
-import { detectObsidianVault } from '../../vault-detection/vault-detection';
-import * as vscode from 'vscode';
+import { isObsidianVault } from '../../vault-detection/vault-detection';
 
-describe('Vault detection when open in obsidian vault', () => {
+describe('isObsidianVault when VSCode open in obsidian vault', () => {
 
-    const mockStatusBarItem: Partial<vscode.StatusBarItem> = {
-        hide: vi.fn(),
-        show: vi.fn(),
-        text: '',
-    };
-
-    it('should show status bar item if workspace item is obsidian vault', () => {
+    it('should return true if workspace item is obsidian vault', () => {
         vi.mock('vscode', () => ({
             workspace: {
                 workspaceFolders: [
@@ -27,9 +20,6 @@ describe('Vault detection when open in obsidian vault', () => {
             existsSync: vi.fn().mockReturnValue(true)
         }));
 
-        detectObsidianVault(mockStatusBarItem as vscode.StatusBarItem);
-
-        expect(mockStatusBarItem.show).toHaveBeenCalled();
+        expect(isObsidianVault()).toBe(true);
     });
-
 });
